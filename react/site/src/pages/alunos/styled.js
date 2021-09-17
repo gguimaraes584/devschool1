@@ -214,10 +214,20 @@ const Container = styled.div`
     }
     .coluna-acao {
         width: .1em;
+        
+    }
+
+
+
+    .coluna-acao img {
+        margin-left: -6.7px;
+        height: 30px;
+
     }
 
     .coluna-acao > button {
         visibility: hidden;
+        
 
     }
 

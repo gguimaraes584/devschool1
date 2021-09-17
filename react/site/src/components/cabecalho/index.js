@@ -14,9 +14,9 @@ export default function Index() {
                 </div>
 
                 <div class="box-image">
-                    <div class="refresh-button"> <button> <img src="./assets/images/recarregar.png" width="25px" />
+                    <div class="refresh-button"> <button> <img src="./assets/images/recarregar.svg" width="25px" />
   </button> </div>
-                    <div class="left-button"> <button> <img src="./assets/images/sair.png" width="25px" color="white" />  </button> </div>
+                    <div class="left-button"> <button> <img src="./assets/images/exit.svg" width="25px" color="white" />  </button> </div>
                 </div>
             </div>
             <div class="bottom-bar-right-header" />

@@ -1,12 +1,15 @@
 import Cabecalho from '../../components/cabecalho'
 import Menu from '../../components/menu'
-
+import React, { useRef } from "react";
 import { Container, Conteudo } from './styled'
-
+import { ToastContainer, toast, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Api from '../../service/api';
 import { useState, useEffect } from 'react';
-const api = new Api();
+import axios from 'axios';
+import LoadingBar from 'react-top-loading-bar';
 
+const api = new Api();
 
 
 export default function Index() {
@@ -17,27 +20,29 @@ export default function Index() {
     const [turma, setTurma] = useState('');
     const [curso, setCurso] = useState('');
     const [idAlterando, setIdAlterando] = useState(0);
-
+    const loading = useRef();
 
     async function listar(){
         let r = await api.listar();
         setAlunos(r);
+        loading.current.complete();
     } 
 
     async function inserir(){
+        loading.current.continuousStart();
         if(idAlterando == 0) {
             let r = await api.inserir(nome, chamada, curso, turma)
             
 
-            if (r.erro) alert(r.erro)
-            else alert('Aluno Inserido Parçaaa') ;
+            if (r.erro) toast.dark(r.erro)
+            else toast.dark('Aluno Inserido Parçaaa') ;
             
 
         } else {
             let r = await api.alterar(idAlterando, nome, chamada, curso, turma)
             
-            if (r.erro) alert(r.erro)
-            else alert('Aluno Alterado');
+            if (r.erro) toast.dark(r.erro)
+            else toast.error    ('Aluno Alterado');
           
         }
 
@@ -45,6 +50,7 @@ export default function Index() {
         
         limparCampos();
         listar();   
+        loading.current.complete();
     }
 
 
@@ -59,8 +65,9 @@ export default function Index() {
 
     async function remover(id){
         let r = await api.remover(id)
-        alert('Aluno Removido Zé');   
+        toast.dark('Aluno Removido Zé');   
         listar(); 
+        loading.current.complete();
     }
 
     async function editar(item){
@@ -69,7 +76,7 @@ export default function Index() {
         setCurso(item.nm_curso);
         setTurma(item.nm_turma);
         setIdAlterando(item.id_matricula);
-        alert('Aluno editado lindo'); 
+         
 
     }
 
@@ -77,6 +84,7 @@ export default function Index() {
     // função é chamada uma vez quando a tela abre
     useEffect(() => {
         listar();
+        loading.current.complete();
     }, []) 
     
 
@@ -84,6 +92,8 @@ export default function Index() {
 
     return (
         <Container>
+            <ToastContainer draggable={false} transition={Zoom} autoClose={3000} />
+            <LoadingBar color="blue" ref={loading} />
             <Menu/>
             <Conteudo>
             
@@ -155,8 +165,8 @@ export default function Index() {
                               ? item.nm_aluno.substr(0, 25) + '...' 
                               : item.nm_aluno} </td>
                         </td>
-                        <td title={item.nm_chamada}>
-                        <td> {item.nm_chamada} </td>
+                        <td title={item.nr_chamada}>
+                        <td> {item.nr_chamada} </td>
                         </td>
                         <td title={item.nm_turma}>
                         <td> {item.nm_turma} </td>
@@ -164,27 +174,10 @@ export default function Index() {
                         <td title={item.nm_curso}>
                         <td > {item.nm_curso} </td>
                         </td>
-                        <td className="coluna-acao"> <button onClick={() => editar(item)   }> <img src="./assets/images/editar.png" alt="" height="18px"/> </button> </td>
-                        <td className= "coluna-acao">   <button onClick={() => remover(item.id_matricula)   }> <img src="./assets/images/lixo.png" alt="" height="18px"/> </button> </td>
+                        <td className="coluna-acao"> <button onClick={() => editar(item)   }> <img src="./assets/images/edit.svg" alt="" height="30px"/> </button> </td>
+                        <td className= "coluna-acao">   <button onClick={() => remover(item.id_matricula)   }> <img src="./assets/images/lixeira.svg" alt="" height="35px"/> </button> </td>
                     </tr>
                     )}
-                    
-                
-
-                
-                   
-                    
-                
-
-                
-                
-
-                    
-                
-
-                
-                
-
                     
                 </tbody> 
 
