@@ -8,6 +8,8 @@ import Api from '../../service/api';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import LoadingBar from 'react-top-loading-bar';
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const api = new Api();
 
@@ -63,12 +65,30 @@ export default function Index() {
 
     }
 
-    async function remover(id){
-        let r = await api.remover(id)
-        toast.dark('Aluno Removido Zé');   
-        listar(); 
-        loading.current.complete();
-    }
+    async function remover(id) {
+        loading.current.continuousStart();
+        confirmAlert({
+          title: "🟠 Removendo Produto",
+          message: `tem certeza ? ${id}`,
+          buttons: [
+            {
+              label: "✅",
+              onClick: async () => {
+                let r = await api.remover(id);
+                if (r.erro) {
+                  toast.dark(r.erro);
+                } else {
+                  toast.dark("😎 Pronto !! Produto foi removido ");
+                }
+                listar();
+              }
+            },
+            {
+              label: "❌"
+            }
+          ]
+        });
+      }
 
     async function editar(item){
         setNome(item.nm_aluno);
@@ -159,6 +179,7 @@ export default function Index() {
                     {alunos.map((item, i )=>
                         
                     <tr className=  { i % 2 == 0 ? "linha-alternada" : "" } >
+                        
                         <td> {item.id_matricula} </td>
                         <td title={item.nm_aluno}>
                         <td> {item.nm_aluno !=null && item.nm_aluno.length >= 25 
